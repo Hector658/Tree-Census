@@ -14,11 +14,17 @@ In this project I managed to use my skills in Python such as:
 - Identifying and handling missing values
 - Identifying and handling invalid values
 - Cleaning text data by removing or replacing whitespace and fixing typos
+- Plotting and analyzing graph data
 
 ## The Data
 Unfortunately the file size is too big for upload it, but here is the webpage
  https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/uvpi-gqnh 
 it includes a CSV with the data and a PDF with very useful information.
+
+![original_dataset](https://github.com/Hector658/Tree-Census/assets/146046209/97ab6658-283c-487c-bfbc-225e8fda77dc)
+
+
+
 
 # Code
 ## Loading the data with pandas
@@ -135,12 +141,17 @@ df['problems'] = df['problems'].fillna('No Problems')
 df
 ```
 
+![second](https://github.com/Hector658/Tree-Census/assets/146046209/6f4b977e-9f48-452d-bfee-1cacc27ee522)
+
+
+
 This already looks clean, but we can change the format for problems
 fortunately there is a comma separating the problems and we can replace this with a dash.
 
 ```python
 df['problems'] = df['problems'].str.replace(',', '/')
 ```
+
 
 
 And we have our final result.
@@ -150,11 +161,16 @@ df
 
 ```
 
+
+
+
 But this is a dataframe for alive trees, so the column of status seems a little redundant, we will drop it too.
 
 ```python
 df.drop(['status'], axis=1)
 ```
+![final_dat](https://github.com/Hector658/Tree-Census/assets/146046209/c5893784-9a12-4570-8a52-2903829aa408)
+
 
 Finally we would like to see some information graphically represented
 and we first plot the comparison between trees in good and fair state
@@ -163,6 +179,10 @@ and we first plot the comparison between trees in good and fair state
 pd.DataFrame(df['health'].value_counts()).plot(kind='bar', figsize=(20,10))
 ```
 
+![health_hist](https://github.com/Hector658/Tree-Census/assets/146046209/b3c1a3c7-2161-4777-8060-e5edc889cdbc)
+
+
+
 And finally the number of trees of each specie
 
 
@@ -170,6 +190,7 @@ And finally the number of trees of each specie
 ```python
 pd.DataFrame(df['spc_latin'].value_counts()).plot(kind='bar', figsize=(20,10))
 ```
+![spec_hist](https://github.com/Hector658/Tree-Census/assets/146046209/98040638-16a3-40dd-bb55-56264e19121c)
 
 
 
