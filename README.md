@@ -58,6 +58,8 @@ And we convert this in a dataframe using the variable df again
 df = pd.DataFrame(data)
 df
 ```
+
+## Deleting non numerical values
 Now we search in each column, starting for the first one.
 If we take a look in the original dataframe we will realize that there are rows without a number id, actually there is no information in 
 those rows, so we will delete them.
@@ -79,6 +81,8 @@ In status we don´t have any missing value.
 Now we see that there are many missing values in health, but fortunately the column status could tell us the tree´s condition
 We only want to keep healthy trees, so we drop every tree whose condition is not Good or Fair
 
+
+## Dropping not useful rows
 
 ```python
 dead_trees = df[(df['health'] != 'Fair') & (df['health'] != 'Good')].index
@@ -104,6 +108,7 @@ This two trees are healthy and we can´t get more information from the other col
 rename them as Unknown in order not to leave missing values.
 This shouldn't be a problem because there are only two rows in this condition.
 
+## Replacing values
 ```python
 df['spc_latin'] = df['spc_latin'].fillna('Unknown')
 ```
@@ -165,13 +170,15 @@ df
 
 
 But this is a dataframe for alive trees, so the column of status seems a little redundant, we will drop it too.
-
+## Our final Dataframe
 ```python
 df.drop(['status'], axis=1)
 ```
 ![final_dat](https://github.com/Hector658/Tree-Census/assets/146046209/c5893784-9a12-4570-8a52-2903829aa408)
 
 
+
+## Graphing
 Finally we would like to see some information graphically represented
 and we first plot the comparison between trees in good and fair state
 
