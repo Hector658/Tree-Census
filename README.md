@@ -43,7 +43,7 @@ data = df[['tree_id', 'block_id', 'tree_dbh', 'stump_diam',
         'status', 'health', 'spc_latin', 'steward',
        'guards', 'sidewalk', 'problems', 'root_stone',
        'root_grate', 'root_other', 'trunk_wire', 'trnk_light', 'trnk_other',
-       'brch_light', 'brch_shoe', 'brch_other', ]]
+       'brch_light', 'brch_shoe', 'brch_other' ]]
 data
 ```
 And we convert this in a dataframe using the variable df again
@@ -61,11 +61,141 @@ For this we will convert all the data from the first column in numerical charact
 df = df[pd.to_numeric(df['tree_id'], errors='coerce').notnull()]
 df
 ```
-Now let´s see if there are null values and how many are in each column
+Now we see if there are null values and how many are in each column
 
 ```python
 df.isna().sum()
 ```
+Doing a new analysis we realize there is a column named stump. According to the description in the attached PDF, a stump is usually a small remaining portion of the trunk with the roots still in the ground after the tree have been cut.
+This still has a chance to become a tree again, so we will left all them for now
+In status we don´t have any missing value.
+
+Now we see that there are many missing values in health, but fortunately the column status could tell us the tree´s condition
+We only want to keep healthy trees, so we drop every tree whose condition is not Good or Fair
+
+
+```python
+dead_trees = df[(df['health'] != 'Fair') & (df['health'] != 'Good')].index
+dead_trees
+```
+
+```python
+df.drop(dead_trees , inplace=True)
+df
+```
+An we see if there is a remaining missing value for the health column
+```python
+df.isna().sum()
+```
+
+There is no missing values, so let´s continue with the next column, the spc_latin
+We check if we can get more information from another column, so  we show on screen this rows
+
+```python
+df[df['spc_latin'].isna()]
+```
+This two trees are healthy and we can´t get more information from the other columns, so we 
+rename them as Unknown in order not to leave missing values.
+This shouldn't be a problem because there are only two rows in this condition.
+
+```python
+df['spc_latin'] = df['spc_latin'].fillna('Unknown')
+```
+
+And again just to confirm we check the missing values
+
+```python
+df.isna().sum()
+```
+Analyzing one more time the remaining columns we realize the stewards and sidewalk columns are not an indicator of the tree´s health
+so we drop them, but first, we replace the missing values in the column guards with the caption 'No guards'
+
+```python
+df['guards'] = df['guards'].fillna('No Guards')
+```
+
+```python
+df.drop(['steward', 'sidewalk'], axis=1)
+```
+
+The next columns are all about problems of the root.
+This is important data, but the first column encompasses all these columns. And looking for a cleaner job
+we erase all of them but the first one.
+
+```python
+df.drop(['root_stone', 'root_grate', 'root_other', 'trunk_wire', 'trnk_light',
+        'trnk_other', 'brch_light', 'brch_shoe', 'brch_other'], axis=1)
+```
+
+Finally we check for the problems. If there are no values in there that means the tree has not root problems, 
+so we replace the missing values with the caption 'No Problems'
+
+```python
+df['problems'] = df['problems'].fillna('No Problems')
+df
+```
+
+This already looks clean, but we can change the format for problems
+fortunately there is a comma separating the problems and we can replace this with a dash.
+
+```python
+df['problems'] = df['problems'].str.replace(',', '/')
+```
+
+
+And we have our final result.
+
+```python
+df
+
+```
+
+But this is a dataframe for alive trees, so the column of status seems a little redundant, we will drop it too.
+
+```python
+df.drop(['status'], axis=1)
+```
+
+Finally we would like to see some information graphically represented
+and we first plot the comparison between trees in good and fair state
+
+```python
+pd.DataFrame(df['health'].value_counts()).plot(kind='bar', figsize=(20,10))
+```
+
+And finally the number of trees of each specie
+
+
+
+```python
+pd.DataFrame(df['spc_latin'].value_counts()).plot(kind='bar', figsize=(20,10))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
